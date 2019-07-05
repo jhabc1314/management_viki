@@ -1,0 +1,33 @@
+{
+    "navigation":
+    [
+        {
+            "text": "Home",
+            "target": "index.md",
+            "toc": false
+        },
+        {
+            "text": "Document",
+            "target": "md/document.md",
+            "toc": true
+        },
+        {
+            "text": "Laravel Swoole",
+            "target": "md/laravel-swoole.md",
+            "toc": true
+        },
+        {
+            "text": "Blog",
+            "target": "http://blog.jackdou.top",
+            "navi": true
+        }
+    ],
+    "actions":
+    [
+        {
+            "text": "Viki",
+            "icon": "css/github.svg",
+            "target": "https://github.com/jhabc1314/management"
+        }
+    ]
+}
