@@ -1,7 +1,7 @@
 ## Management
 
 ::: alert-success
-JackDou/Management 项目是基于 jackdou/laravel-swoole, laravel, adminLTE 定制的微服务管理平台
+JackDou/Management 项目是基于 [jackdou/laravel-swoole](https://github.com/jhabc1314/laravel-swoole), laravel, [adminLTE](https://github.com/ColorlibHQ/AdminLTE) 定制的微服务管理平台
 :::
 
 ## 界面预览
