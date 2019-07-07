@@ -13,5 +13,5 @@ JackDou/Management 项目是基于 [jackdou/laravel-swoole](https://github.com/j
 ![服务管理](./img/management_server.png)
 
 ::: alert-info
-[详细文档](http://www.viki.top/#!md/document.md)
+[详细文档](http://www.jackdou.top/#!md/document.md)
 :::
