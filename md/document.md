@@ -47,7 +47,7 @@
 浏览器访问 `your-domain.url/management`，按照配置的权限系统登录即可访问首页
     ![首页](../img/management_home.png)
     
-## 配置 `node_manager`
+## 配置 `node_manager` (关键)
 1. 添加 `node_manager` 服务
     - 选择 微服务管理 页面右上角 添加服务
     - 按照如下规则添加
@@ -72,6 +72,31 @@
 - 自定义服务运行的机器上必须保证 `node_manager` 服务成功运行
 - 需要修改所有需要运行服务机器上 `config/swoole.php` 中的服务发现方式为 `2`
 - 自定义服务的详细配置启动方式参考 [laravel-swoole](https://github.com/jhabc1314/laravel-swoole)
+## 升级注意事项
+::: alert-info
+- 从旧版本升级到最新版本时一些新的配置功能备份删除生成的配置文件后重新执行 `vendor:publish`，也可以从 `vendor/jackdou/management/configs/` 下手动拷贝新配置项
+- 需要再次执行 `artisan migrate`
+:::
+
+## new! Supervisor
+:::alert-success
+`v0.2.0` 后支持 `supervisor` 控制服务的启动停止等功能
+使用前需要保证每个节点机器都成功安装 `supervisor` 并成功启动 `supervisord` 进程 [安装教程](http://supervisord.org/installing.html)
+找到 `supervisor` 的配置目录，在 `config/management.php` 中修改 `supervisor` 下对应的配置项
+:::
+- `node_manager` 使用 `supervisor`
+    - `node_manager` 是整个系统运行的核心服务，需要最先配置
+    - 按照前面的教程成功启动 `node_manager` 后点击 服务管理页面 `node_manager` 服务的 `supervisor` 按钮
+    - 初始状态每个节点都是显示没有此进程 ![supervisor.index](../img/supervisor.index.png)
+    - 选择右上角的编辑配置，按照提示填写内容，命令路径等尽量使用绝对路径，全部填写完毕后提交 ![supervisor.edit](../img/supervisor.edit.png)
+    - 选择右上角的下发配置，点击全部下发，等待页面提示下发成功
+    - !重要：这时先手动停止所有 `node_manager` 节点机器的服务。`php artisan swoole:server node_manager stop`
+    - 执行 `supervisorctl start node_manager` 命令
+    - 所有节点都变成 `RUNNING` 状态后即代表服务管理成功 ![supervisor.running](../img/supervisor.running.png)
+- 其他服务使用 `supervisor`
+    - 其他服务配置方式和node_manager 一致
+    - 但是可以在服务未运行的情况下直接 配置 下发 启动
+    - 如果服务是手动运行的同样需要先停止
 
 ## 使用问题
 ::: alert-success
@@ -79,6 +104,7 @@
 :::
 
 ## 更新计划（TODO）
-- 增加服务检测存活状态功能
+- 增加服务检测存活状态功能(v0.2.0实现)
+- `supervisor` 服务进程控制管理(v0.2.0实现)
 - 增加首页实时查看服务节点统计信息功能
 - 增加更完善的权限管理功能
