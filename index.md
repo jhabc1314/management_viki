@@ -12,6 +12,10 @@
 
 ![服务管理](./img/management_server.png)
 
+<hr>
+
+![调度任务管理](./img/crontab_index.png)
+
 ::: alert-info
 [详细文档](http://www.jackdou.top/#!md/document.md)
 :::

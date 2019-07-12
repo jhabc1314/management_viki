@@ -72,11 +72,6 @@
 - 自定义服务运行的机器上必须保证 `node_manager` 服务成功运行
 - 需要修改所有需要运行服务机器上 `config/swoole.php` 中的服务发现方式为 `2`
 - 自定义服务的详细配置启动方式参考 [laravel-swoole](https://github.com/jhabc1314/laravel-swoole)
-## 升级注意事项
-::: alert-info
-- 从旧版本升级到最新版本时一些新的配置功能备份删除生成的配置文件后重新执行 `vendor:publish`，也可以从 `vendor/jackdou/management/configs/` 下手动拷贝新配置项
-- 需要再次执行 `artisan migrate`
-:::
 
 ## new! Supervisor
 :::alert-success
@@ -94,17 +89,42 @@
     - 执行 `supervisorctl start node_manager` 命令
     - 所有节点都变成 `RUNNING` 状态后即代表服务管理成功 ![supervisor.running](../img/supervisor.running.png)
 - 其他服务使用 `supervisor`
-    - 其他服务配置方式和node_manager 一致
+    - 其他服务配置方式和 `node_manager` 一致
     - 但是可以在服务未运行的情况下直接 配置 下发 启动
     - 如果服务是手动运行的同样需要先停止
+## new! Crontab
+:::alert-success
+- `v0.2.2` 开始新增 `crontab` 调度任务管理功能
+- 调度任务是基于 `swoole` 的定时器功能
+- 在 `laravel` [任务调度](https://learnku.com/docs/laravel/5.5/scheduling/1325#scheduling-artisan-commands) 的基础上进一步增强管理性，可扩展性
+:::
+- 配置 `cron_manager`
+    - 在 `config/swoole.php` 中配置 `cron_manager` 的相关信息。例如定时任务是在 .100 机器上运行，则在该机器的配置文件中修改即可
+    - 在服务管理后台新增 `node_manager` 服务，节点配置填写需要运行任务的机器 .100。过程和配置其他服务都一致，最后使用 `supervisor` 下发启动管理
+- 添加调度任务
+    - `laravel` 的调度任务功能最小粒度是分钟，所以首先添加 `laravel` 的调度命令 `/usr/bin/php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1` 时间输入 `60` 
+        ![添加](../img/crontab_add.png)
+    - 添加成功后点击启动， 调度任务就会每分钟执行一次，业务的定时任务等代码则完全不需要做任何改动
+    - 如果有额外的定时需求，比如需要每10秒执行一次，则可以再新增一个调度任务，输入脚本执行路径，设置每十秒执行一次启动即可
+::: alert-danger
+调度任务是运行在 `cron_manager` 服务进程下的，所以如果重启服务后切记需要手动停止启动所有该机器上的任务!
+:::
+
+## 升级注意事项
+::: alert-info
+- 从旧版本升级到最新版本时一些新的配置功能备份删除生成的配置文件后重新执行 `vendor:publish`，也可以从 `vendor/jackdou/management/configs/` 下手动拷贝新配置项
+- 需要再次执行 `artisan migrate`
+:::
 
 ## 使用问题
 ::: alert-success
-如在使用中有任何报错或问题欢迎及时沟通联系，感谢！
+- v0.2.2之前的版本在多机器下发管理时会出现错误，请更新至最新版本，感谢！
+- 如在使用中有任何报错或问题欢迎及时沟通联系，感谢！
 :::
 
 ## 更新计划（TODO）
 - 增加服务检测存活状态功能(v0.2.0实现)
 - `supervisor` 服务进程控制管理(v0.2.0实现)
+- `crontab` 调度任务管理(v0.2.2实现)
 - 增加首页实时查看服务节点统计信息功能
 - 增加更完善的权限管理功能

@@ -1,5 +1,5 @@
 # laravel-swoole
-基于 `swoole` 的 `laravel` `RPC`  扩展包， 目前提供了 `RPC Client` , `RPC Server` 和集群机器节点管理 `server` 功能
+基于 `swoole` 的 `laravel` `RPC`  扩展包， 目前提供了 `RPC Client` , `RPC Server` 功能
 
 
 ## 基础条件
@@ -23,7 +23,7 @@
 - v1.1 及以下：
     - `php artisan swoole:server start/stop/reload` //开启/关闭/热重启 服务
 - v1.2 开始及以后
-    - 支持单个机器配置一个业务服务和一个管理进程服务
+    - 支持单个机器配置一个业务服务、一个管理服务和一个定时任务服务(后面两个需要配合 `jackdou/management` 使用)
     - `php artisan swoole:server server_name start/stop/reload` //开启、关闭、热重启 server_name服务
  - 使用 `ps aux | grep 'your server_name' ` 可以查看启动的进程信息
 ## fpm 中使用同步客户端访问微服务 demo
@@ -43,8 +43,8 @@
 - 在项目任意可以访问的 `Controller` 中添加如下内容
                 
                 use JackDou\Swoole\Facade\Service;
-                
-                $res = Service::getInstance('swoole')->call('TestService::test', '你好')->getResult();
+                //默认超时时间为0.5，可以自己定义，需要执行时间比较久的可以调大
+                $res = Service::getInstance('swoole')->call('TestService::test', '你好')->getResult(0.5);
                 dd($res);
 - 浏览器中访问观察效果。
 
@@ -162,9 +162,10 @@
 - 异步协程客户端在非密集型 `cpu io` 的场景下可以提高性能，推荐使用，但是注意异步代码的执行逻辑和编写方式
 - 暂不支持传递图片文件等资源
 ## 迭代计划（TODO）
-- 增加结合 `jackdou/management` 管理后台实现多机器服务下发配置 [了解详情](https://github.com/jhabc1314/management)（v1.2.1 已实现）
+- 增加结合 `jackdou/management` 管理后台实现多机器服务下发配置 [了解详情](https://github.com/jhabc1314/management)（已实现）
+- 集成 `supervisor` 自动下发配置管理 (已实现)
+- 增加 `crontab` 定时脚本 `server`(已实现)
 - 支持基础 `web socket` 功能
 - 支持请求头，传递资源图片等功能
 - 支持单元测试和自动化测试
 - 服务节点检测，自动下线服务
-- 集成 `supervisor` 自动下发配置管理 (jackdou/management 0.2.0实现)
