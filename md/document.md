@@ -102,12 +102,13 @@
     - 在 `config/swoole.php` 中配置 `cron_manager` 的相关信息。例如定时任务是在 .100 机器上运行，则在该机器的配置文件中修改即可
     - 在服务管理后台新增 `node_manager` 服务，节点配置填写需要运行任务的机器 .100。过程和配置其他服务都一致，最后使用 `supervisor` 下发启动管理
 - 添加调度任务
-    - `laravel` 的调度任务功能最小粒度是分钟，所以首先添加 `laravel` 的调度命令 `/usr/bin/php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1` 时间输入 `60` 
+    - `laravel` 的调度任务功能最小粒度是分钟，所以首先添加 `laravel` 的调度命令 `/usr/bin/php /path-to-your-project/artisan schedule:run` 时间输入 `60` 
         ![添加](../img/crontab_add.png)
     - 添加成功后点击启动， 调度任务就会每分钟执行一次，业务的定时任务等代码则完全不需要做任何改动
     - 如果有额外的定时需求，比如需要每10秒执行一次，则可以再新增一个调度任务，输入脚本执行路径，设置每十秒执行一次启动即可
 ::: alert-danger
-调度任务是运行在 `cron_manager` 服务进程下的，所以如果重启服务后切记需要手动停止启动所有该机器上的任务!
+- 执行命令做了转义，所以 `laravel` 的任务调度命令后面请勿添加 `>> /dev/null 2>&1`，否则会报错
+- 调度任务是运行在 `cron_manager` 服务进程下的，所以如果重启服务后切记需要手动停止启动所有该机器上的任务!
 :::
 
 ## 升级注意事项
